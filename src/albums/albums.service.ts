@@ -2,16 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Album } from './albums.interface';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { v4 as uuidv4 } from 'uuid';
-// import { FavoritesService } from '../favorites/favorites.service';
-// import { TracksService } from '../tracks/tracks.service';
+import { FavoritesService } from '../favorites/favorites.service';
+import { TracksService } from '../tracks/tracks.service';
 
 @Injectable()
 export class AlbumsService {
   private albums: Album[] = [];
 
   constructor(
-    // private tracksService: TracksService,
-    // private favoritesService: FavoritesService,
+    private tracksService: TracksService,
+    private favoritesService: FavoritesService,
   ) {}
 
   findAll(): Album[] {
@@ -43,12 +43,8 @@ export class AlbumsService {
     const index = this.albums.findIndex((album) => album.id === id);
     if (index === -1) throw new NotFoundException('Album not found');
 
-    // Remove albumId from tracks
-    // this.tracksService.removeAlbumFromTracks(id);
-
-    // // Remove albumId from favorites
-    // this.favoritesService.removeAlbumFromFavorites(id);
-
+    this.tracksService.removeAlbumFromTracks(id);
+    this.favoritesService.removeAlbumFromFavorites(id);
     this.albums.splice(index, 1);
   }
 

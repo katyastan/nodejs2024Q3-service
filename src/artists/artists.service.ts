@@ -2,11 +2,19 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Artist } from './artists.interface';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { AlbumsService } from '../albums/albums.service';
+import { TracksService } from '../tracks/tracks.service';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Injectable()
 export class ArtistsService {
   private artists: Artist[] = [];
 
+  constructor(
+    private albumsService: AlbumsService,
+    private tracksService: TracksService,
+    private favoritesService: FavoritesService,
+  ) {}
 
   findAll(): Artist[] {
     return this.artists;
@@ -37,6 +45,9 @@ export class ArtistsService {
     const index = this.artists.findIndex((artist) => artist.id === id);
     if (index === -1) throw new NotFoundException('Artist not found');
 
+    this.albumsService.removeArtistFromAlbums(id);
+    this.tracksService.removeArtistFromTracks(id);
+    this.favoritesService.removeArtistFromFavorites(id);
     this.artists.splice(index, 1);
   }
 }
