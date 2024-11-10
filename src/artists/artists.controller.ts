@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('artist')
 export class ArtistsController {
@@ -27,6 +27,7 @@ export class ArtistsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get single artist by id' })
+  @ApiParam({ name: 'id', description: 'Artist UUID' })
   @ApiResponse({ status: 200, description: 'Artist found.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Artist not found.' })
@@ -45,6 +46,7 @@ export class ArtistsController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update artist info' })
+  @ApiParam({ name: 'id', description: 'Artist UUID' })
   @ApiResponse({ status: 200, description: 'Artist updated successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Artist not found.' })
@@ -58,6 +60,7 @@ export class ArtistsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete artist' })
+  @ApiParam({ name: 'id', description: 'Artist UUID' })
   @ApiResponse({ status: 204, description: 'Artist deleted successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Artist not found.' })

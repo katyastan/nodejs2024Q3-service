@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('album')
 export class AlbumsController {
@@ -27,6 +27,7 @@ export class AlbumsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get single album by id' })
+  @ApiParam({ name: 'id', description: 'Album UUID' })
   @ApiResponse({ status: 200, description: 'Album found.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Album not found.' })
@@ -45,6 +46,7 @@ export class AlbumsController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update album info' })
+  @ApiParam({ name: 'id', description: 'Album UUID' })
   @ApiResponse({ status: 200, description: 'Album updated successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Album not found.' })
@@ -57,6 +59,7 @@ export class AlbumsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiParam({ name: 'id', description: 'Album UUID' })
   @ApiOperation({ summary: 'Delete album' })
   @ApiResponse({ status: 204, description: 'Album deleted successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })

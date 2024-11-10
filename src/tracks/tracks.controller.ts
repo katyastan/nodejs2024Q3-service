@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('track')
 export class TracksController {
@@ -27,6 +27,7 @@ export class TracksController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get single track by id' })
+  @ApiParam({ name: 'id', description: 'Track UUID' })
   @ApiResponse({ status: 200, description: 'Track found.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Track not found.' })
@@ -45,6 +46,7 @@ export class TracksController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update track info' })
+  @ApiParam({ name: 'id', description: 'Track UUID' })
   @ApiResponse({ status: 200, description: 'Track updated successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Track not found.' })
@@ -58,6 +60,7 @@ export class TracksController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete track' })
+  @ApiParam({ name: 'id', description: 'Track UUID' })
   @ApiResponse({ status: 204, description: 'Track deleted successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Track not found.' })
