@@ -1,7 +1,6 @@
 import {
   Injectable,
   NotFoundException,
-  BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
 import { User } from './users.interface';

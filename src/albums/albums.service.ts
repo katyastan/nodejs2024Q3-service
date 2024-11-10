@@ -1,4 +1,9 @@
-import { forwardRef, ForwardReference, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Album } from './albums.interface';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { v4 as uuidv4 } from 'uuid';
@@ -44,9 +49,8 @@ export class AlbumsService {
   delete(id: string): void {
     const index = this.albums.findIndex((album) => album.id === id);
     if (index === -1) throw new NotFoundException('Album not found');
-
     this.tracksService.removeAlbumFromTracks(id);
-    this.favoritesService.removeAlbumFromFavorites(id);
+    this.favoritesService.removeAlbum(id);
     this.albums.splice(index, 1);
   }
 

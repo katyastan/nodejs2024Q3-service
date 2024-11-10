@@ -1,9 +1,9 @@
 import {
-    forwardRef,
-    Inject,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { Favorites } from './favorites.interface';
 import { ArtistsService } from '../artists/artists.service';
@@ -43,7 +43,9 @@ export class FavoritesService {
 
   addArtistToFavorites(artistId: string) {
     this.assertArtistExists(artistId);
-    this.favorites.artists.push(artistId);
+    if (!this.favorites.artists.includes(artistId)) {
+      this.favorites.artists.push(artistId);
+    }
   }
 
   removeArtistFromFavorites(artistId: string) {
@@ -54,7 +56,9 @@ export class FavoritesService {
 
   addAlbumToFavorites(albumId: string) {
     this.assertAlbumExists(albumId);
-    this.favorites.albums.push(albumId);
+    if (!this.favorites.albums.includes(albumId)) {
+      this.favorites.albums.push(albumId);
+    }
   }
 
   removeAlbumFromFavorites(albumId: string) {
@@ -65,7 +69,9 @@ export class FavoritesService {
 
   addTrackToFavorites(trackId: string) {
     this.assertTrackExists(trackId);
-    this.favorites.tracks.push(trackId);
+    if (!this.favorites.tracks.includes(trackId)) {
+      this.favorites.tracks.push(trackId);
+    }
   }
 
   removeTrackFromFavorites(trackId: string) {
