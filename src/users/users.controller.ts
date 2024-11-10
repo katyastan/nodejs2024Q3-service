@@ -9,10 +9,14 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 
 @Controller('user')
 export class UsersController {
@@ -35,10 +39,22 @@ export class UsersController {
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
+    const user = this.usersService.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const dto = plainToInstance(UpdatePasswordDto, updatePasswordDto);
+    const errors = await validate(dto);
+
+    if (errors.length > 0) {
+      throw new BadRequestException('Validation failed');
+    }
+
     return this.usersService.update(id, updatePasswordDto);
   }
 
