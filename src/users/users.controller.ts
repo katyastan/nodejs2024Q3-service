@@ -34,7 +34,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiOperation({ summary: 'Get single user by id' })
   @ApiParam({ name: 'id', description: 'User UUID' })
   @ApiResponse({ status: 200, description: 'User found.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
@@ -70,7 +70,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete a user' })
+  @ApiOperation({ summary: 'Delete user' })
   @ApiParam({ name: 'id', description: 'User UUID' })
   @ApiResponse({ status: 204, description: 'User deleted successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })

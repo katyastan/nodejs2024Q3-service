@@ -12,28 +12,42 @@ import {
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('track')
 export class TracksController {
   constructor(private readonly tracksService: TracksService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get all tracks' })
+  @ApiResponse({ status: 200, description: 'List of tracks.' })
   getAll() {
     return this.tracksService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get single track by id' })
+  @ApiResponse({ status: 200, description: 'Track found.' })
+  @ApiResponse({ status: 400, description: 'Invalid UUID.' })
+  @ApiResponse({ status: 404, description: 'Track not found.' })
   getById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.tracksService.findById(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create a new track' })
+  @ApiResponse({ status: 201, description: 'Track created successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid input.' })
   create(@Body() createTrackDto: CreateTrackDto) {
     return this.tracksService.create(createTrackDto);
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Update track info' })
+  @ApiResponse({ status: 200, description: 'Track updated successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid UUID.' })
+  @ApiResponse({ status: 404, description: 'Track not found.' })
   update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateTrackDto: CreateTrackDto,
@@ -43,6 +57,10 @@ export class TracksController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete track' })
+  @ApiResponse({ status: 204, description: 'Track deleted successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid UUID.' })
+  @ApiResponse({ status: 404, description: 'Track not found.' })
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     this.tracksService.delete(id);
   }
