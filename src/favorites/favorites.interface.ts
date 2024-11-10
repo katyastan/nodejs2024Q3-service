@@ -1,6 +1,6 @@
-import { Album } from "src/albums/albums.interface";
-import { Artist } from "src/artists/artists.interface";
-import { Track } from "src/tracks/tracks.interface";
+import { Album } from 'src/albums/albums.interface';
+import { Artist } from 'src/artists/artists.interface';
+import { Track } from 'src/tracks/tracks.interface';
 
 export interface Favorites {
   artists: string[]; // favorite artists ids
@@ -8,7 +8,7 @@ export interface Favorites {
   tracks: string[]; // favorite tracks ids
 }
 
-export interface FavoritesResponse{
+export interface FavoritesResponse {
   artists: Artist[];
   albums: Album[];
   tracks: Track[];

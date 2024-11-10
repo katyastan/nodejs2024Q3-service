@@ -13,14 +13,19 @@ export class UsersService {
   private users: User[] = [];
 
   findAll(): Omit<User, 'password'>[] {
-    return this.users.map(({ password, ...user }) => user);
+    return this.users.map((user) => {
+      const userCopy = { ...user };
+      delete userCopy.password;
+      return userCopy;
+    });
   }
 
   findById(id: string): Omit<User, 'password'> {
     const user = this.users.find((user) => user.id === id);
     if (!user) throw new NotFoundException('User not found');
-    const { password, ...result } = user;
-    return result;
+    const userCopy = { ...user };
+    delete userCopy.password;
+    return userCopy;
   }
 
   create(createUserDto: CreateUserDto): Omit<User, 'password'> {
@@ -33,8 +38,9 @@ export class UsersService {
       updatedAt: Date.now(),
     };
     this.users.push(newUser);
-    const { password, ...result } = newUser;
-    return result;
+    const newUserCopy = { ...newUser };
+    delete newUserCopy.password;
+    return newUserCopy;
   }
 
   update(
@@ -42,6 +48,7 @@ export class UsersService {
     updatePasswordDto: UpdatePasswordDto,
   ): Omit<User, 'password'> {
     const user = this.users.find((user) => user.id === id);
+    if (!user) throw new NotFoundException('User not found');
 
     if (user.password !== updatePasswordDto.oldPassword) {
       throw new ForbiddenException('Old password is incorrect');
@@ -51,8 +58,9 @@ export class UsersService {
     user.version += 1;
     user.updatedAt = Date.now();
 
-    const { password, ...result } = user;
-    return result;
+    const updatedUserCopy = { ...user };
+    delete updatedUserCopy.password;
+    return updatedUserCopy;
   }
 
   delete(id: string): void {
