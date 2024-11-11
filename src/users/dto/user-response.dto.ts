@@ -14,12 +14,6 @@ export class UserResponseDto {
   login: string;
 
   @ApiProperty({
-    example: 'Password123',
-    description: 'Password of the user account.',
-  })
-  password: string;
-
-  @ApiProperty({
     example: 1,
     description: 'Version number of the user record.',
   })

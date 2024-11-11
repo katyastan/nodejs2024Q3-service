@@ -617,10 +617,6 @@ components:
           type: string
           example: your_name
           description: Login name of the user.
-        password:
-          type: string
-          example: Password123
-          description: Password of the user account.
         version:
           type: number
           example: 1
@@ -636,7 +632,6 @@ components:
       required:
         - id
         - login
-        - password
         - version
         - createdAt
         - updatedAt
