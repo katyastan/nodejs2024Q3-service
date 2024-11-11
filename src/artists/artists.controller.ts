@@ -13,6 +13,7 @@ import {
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ArtistResponseDto } from './dto/artist-response.dto';
 
 @Controller('artist')
 export class ArtistsController {
@@ -20,7 +21,11 @@ export class ArtistsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all artists' })
-  @ApiResponse({ status: 200, description: 'List of artists.' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of artists.',
+    type: [ArtistResponseDto],
+  })
   getAll() {
     return this.artistsService.findAll();
   }
@@ -28,7 +33,11 @@ export class ArtistsController {
   @Get(':id')
   @ApiOperation({ summary: 'Get single artist by id' })
   @ApiParam({ name: 'id', description: 'Artist UUID' })
-  @ApiResponse({ status: 200, description: 'Artist found.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Artist found.',
+    type: ArtistResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Artist not found.' })
   getById(@Param('id', new ParseUUIDPipe()) id: string) {
@@ -38,7 +47,11 @@ export class ArtistsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new artist' })
-  @ApiResponse({ status: 201, description: 'Artist created successfully.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Artist created successfully.',
+    type: ArtistResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   create(@Body() createArtistDto: CreateArtistDto) {
     return this.artistsService.create(createArtistDto);
@@ -47,7 +60,11 @@ export class ArtistsController {
   @Put(':id')
   @ApiOperation({ summary: 'Update artist info' })
   @ApiParam({ name: 'id', description: 'Artist UUID' })
-  @ApiResponse({ status: 200, description: 'Artist updated successfully.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Artist updated successfully.',
+    type: ArtistResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Artist not found.' })
   update(

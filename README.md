@@ -29,9 +29,14 @@ PORT=4000
 ```
 
 ## Running application
-
+To start the application:
 ```bash
-npm start
+npm run start
+```
+
+To run the app in development mode with hot-reloading, use:
+```bash
+npm run start:dev
 ```
 
 After starting the app on port (4000 as default) you can open
@@ -71,6 +76,11 @@ The API documentation is generated using OpenAPI (Swagger) and is available at:
 
 ```
 http://localhost:4000/doc
+```
+
+To generate new api.yaml file:
+```bash
+npm run swagger
 ```
 
 ### Debugging in VSCode

@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { FavoritesResponseDto } from './dto/favorites-response.dto';
 
 @Controller('favs')
 export class FavoritesController {
@@ -17,7 +18,11 @@ export class FavoritesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all favorites' })
-  @ApiResponse({ status: 200, description: 'List of favorites.' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of favorites.',
+    type: [FavoritesResponseDto],
+  })
   getAll() {
     return this.favoritesService.getAllFavorites();
   }
@@ -26,7 +31,11 @@ export class FavoritesController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Add artist to favorites' })
   @ApiParam({ name: 'id', description: 'Artist UUID' })
-  @ApiResponse({ status: 201, description: 'Artist added to favorites.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Artist added to favorites.',
+    type: FavoritesResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 422, description: 'Artist not found.' })
   addArtist(@Param('id', new ParseUUIDPipe()) id: string) {
@@ -48,7 +57,11 @@ export class FavoritesController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Add album to favorites' })
   @ApiParam({ name: 'id', description: 'Album UUID' })
-  @ApiResponse({ status: 201, description: 'Album added to favorites.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Album added to favorites.',
+    type: FavoritesResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 422, description: 'Album not found.' })
   addAlbum(@Param('id', new ParseUUIDPipe()) id: string) {
@@ -70,7 +83,11 @@ export class FavoritesController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Add track to favorites' })
   @ApiParam({ name: 'id', description: 'Track UUID' })
-  @ApiResponse({ status: 201, description: 'Track added to favorites.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Track added to favorites.',
+    type: FavoritesResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 422, description: 'Track not found.' })
   addTrack(@Param('id', new ParseUUIDPipe()) id: string) {

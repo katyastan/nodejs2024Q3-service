@@ -13,6 +13,7 @@ import {
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { AlbumResponseDto } from './dto/album-response.dto';
 
 @Controller('album')
 export class AlbumsController {
@@ -20,7 +21,11 @@ export class AlbumsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all albums' })
-  @ApiResponse({ status: 200, description: 'List of albums.' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of albums.',
+    type: [AlbumResponseDto],
+  })
   getAll() {
     return this.albumsService.findAll();
   }
@@ -28,7 +33,11 @@ export class AlbumsController {
   @Get(':id')
   @ApiOperation({ summary: 'Get single album by id' })
   @ApiParam({ name: 'id', description: 'Album UUID' })
-  @ApiResponse({ status: 200, description: 'Album found.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Album found.',
+    type: AlbumResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Album not found.' })
   getById(@Param('id', new ParseUUIDPipe()) id: string) {
@@ -38,7 +47,11 @@ export class AlbumsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new album' })
-  @ApiResponse({ status: 201, description: 'Album created successfully.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Album created successfully.',
+    type: AlbumResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   create(@Body() createAlbumDto: CreateAlbumDto) {
     return this.albumsService.create(createAlbumDto);
@@ -47,7 +60,11 @@ export class AlbumsController {
   @Put(':id')
   @ApiOperation({ summary: 'Update album info' })
   @ApiParam({ name: 'id', description: 'Album UUID' })
-  @ApiResponse({ status: 200, description: 'Album updated successfully.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Album updated successfully.',
+    type: AlbumResponseDto,
+  })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Album not found.' })
   update(
