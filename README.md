@@ -11,13 +11,13 @@ Home Library Service is a Node.js RESTful API built with NestJS. Users can creat
 ## Downloading
 
 ```bash
-git clone {repository URL}
+git clone git@github.com:katyastan/nodejs2024Q3-service.git
 ```
 
 ## Installing NPM modules
 
 ```bash
-npm install
+npm install --force
 ```
 
 ## Port
