@@ -17,7 +17,7 @@ git clone git@github.com:katyastan/nodejs2024Q3-service.git
 ## Installing NPM modules
 
 ```bash
-npm install --force
+npm install
 ```
 
 ## Port
