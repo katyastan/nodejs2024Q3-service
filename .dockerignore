@@ -1,0 +1,22 @@
+# Node module directories
+node_modules
+dist
+
+# Logs
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Local environment files
+.env
+.env.local
+.DS_Store
+
+# Git files
+.git
+.gitignore
+
+# Tests and reports
+coverage
+test
+*.spec.ts
