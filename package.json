@@ -20,7 +20,11 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "swagger": "ts-node src/export-swagger.ts"
+    "swagger": "ts-node src/export-swagger.ts",
+    "docker:build": "docker build -t katyastan/nodejs2024q3-service-app:latest .",
+    "docker:push": "docker push katyastan/nodejs2024q3-service-app:latest",
+    "docker:compose": "docker compose up",
+    "docker:scan": "docker scout cves katyastan/nodejs2024q3-service-app:latest"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.8",
