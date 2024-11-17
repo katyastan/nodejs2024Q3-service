@@ -20,6 +20,7 @@ services:
     env_file: .env.postgres
     volumes:
       - db_data:/var/lib/postgresql/data
+      - db-logs:/var/log/postgresql
     ports:
       - '5432:5432'
     networks:
@@ -31,3 +32,4 @@ networks:
 
 volumes:
   db_data:
+  db-logs:
