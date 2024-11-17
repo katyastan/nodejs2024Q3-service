@@ -26,8 +26,8 @@ export class AlbumsController {
     description: 'List of albums.',
     type: [AlbumResponseDto],
   })
-  getAll() {
-    return this.albumsService.findAll();
+  async getAll() {
+    await this.albumsService.findAll();
   }
 
   @Get(':id')
@@ -40,8 +40,8 @@ export class AlbumsController {
   })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Album not found.' })
-  getById(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.albumsService.findById(id);
+  async getById(@Param('id', new ParseUUIDPipe()) id: string) {
+    await this.albumsService.findById(id);
   }
 
   @Post()
@@ -53,8 +53,8 @@ export class AlbumsController {
     type: AlbumResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
-  create(@Body() createAlbumDto: CreateAlbumDto) {
-    return this.albumsService.create(createAlbumDto);
+  async create(@Body() createAlbumDto: CreateAlbumDto) {
+    await this.albumsService.create(createAlbumDto);
   }
 
   @Put(':id')
@@ -67,11 +67,11 @@ export class AlbumsController {
   })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Album not found.' })
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateAlbumDto: CreateAlbumDto,
   ) {
-    return this.albumsService.update(id, updateAlbumDto);
+    await this.albumsService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
@@ -81,7 +81,7 @@ export class AlbumsController {
   @ApiResponse({ status: 204, description: 'Album deleted successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Album not found.' })
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    this.albumsService.delete(id);
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    await this.albumsService.delete(id);
   }
 }

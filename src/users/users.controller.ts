@@ -34,8 +34,8 @@ export class UsersController {
     description: 'List of users.',
     type: [UserResponseDto],
   })
-  getAll() {
-    return this.usersService.findAll();
+  async getAll() {
+    await this.usersService.findAll();
   }
 
   @Get(':id')
@@ -48,8 +48,8 @@ export class UsersController {
   })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  getById(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.usersService.findById(id);
+  async getById(@Param('id', new ParseUUIDPipe()) id: string) {
+    await this.usersService.findById(id);
   }
 
   @Post()
@@ -62,8 +62,8 @@ export class UsersController {
     type: UserResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    await this.usersService.create(createUserDto);
   }
 
   @Put(':id')
@@ -78,11 +78,11 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @ApiResponse({ status: 403, description: 'Old password is wrong.' })
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    return this.usersService.update(id, updatePasswordDto);
+    await this.usersService.update(id, updatePasswordDto);
   }
 
   @Delete(':id')
@@ -92,7 +92,7 @@ export class UsersController {
   @ApiResponse({ status: 204, description: 'User deleted successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    this.usersService.delete(id);
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    await this.usersService.delete(id);
   }
 }
