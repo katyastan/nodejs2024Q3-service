@@ -7,9 +7,7 @@ import { ArtistsModule } from './artists/artists.module';
 import { AlbumsModule } from './albums/albums.module';
 import { TracksModule } from './tracks/tracks.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { get } from 'http';
-import { getTypeOrmConfig } from './config/typeorm';
+import { PrismaModule } from './prisma/prisma.module';
 
 
 
@@ -19,11 +17,7 @@ import { getTypeOrmConfig } from './config/typeorm';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: getTypeOrmConfig,
-      inject: [ConfigService],
-    }),  
+    PrismaModule,
     UsersModule,
     ArtistsModule,
     AlbumsModule,

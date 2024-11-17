@@ -1,66 +1,96 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
-import { User } from './users.entity';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 
-
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
-  async findAll(): Promise<Omit<User, 'password'>[]> {
-    const users = await this.usersRepository.find();
-    return users.map(({ password, ...user }) => user);
-  }
-
-  async findById(id: string): Promise<Omit<User, 'password'>> {
-    const user = await this.usersRepository.findOneBy({ id });
-    if (!user) throw new NotFoundException('User not found');
-    const { password, ...result } = user;
-    return result;
-  }
-
-  async create(createUserDto: CreateUserDto): Promise<Omit<User, 'password'>> {
-    const user = this.usersRepository.create({
-      ...createUserDto,
-      version: 1,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+  async findAll() {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        login: true,
+        version: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
-    await this.usersRepository.save(user);
-    const { password, ...result } = user;
-    return result;
   }
 
-  async update(id: string, updatePasswordDto: UpdatePasswordDto): Promise<Omit<User, 'password'>> {
-    const user = await this.usersRepository.findOneBy({ id });
+  async findById(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        login: true,
+        version: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
+  async create(createUserDto: CreateUserDto) {
+    const now = BigInt(Date.now());
+    return this.prisma.user.create({
+      data: {
+        login: createUserDto.login,
+        password: createUserDto.password,
+        version: 1,
+        createdAt: now,
+        updatedAt: now,
+      },
+      select: {
+        id: true,
+        login: true,
+        version: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  async update(id: string, updatePasswordDto: UpdatePasswordDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
     if (!user) throw new NotFoundException('User not found');
 
     if (user.password !== updatePasswordDto.oldPassword) {
       throw new ForbiddenException('Old password is incorrect');
     }
 
-    user.password = updatePasswordDto.newPassword;
-    user.version += 1;
-    user.updatedAt = new Date();
+    const updatedVersion = user.version + 1;
+    const now = BigInt(Date.now());
 
-    await this.usersRepository.save(user);
-    const { password, ...result } = user;
-    return result;
+    return this.prisma.user.update({
+      where: { id },
+      data: {
+        password: updatePasswordDto.newPassword,
+        version: updatedVersion,
+        updatedAt: now,
+      },
+      select: {
+        id: true,
+        login: true,
+        version: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
   }
 
-  async delete(id: string): Promise<void> {
-    const result = await this.usersRepository.delete(id);
-    if (result.affected === 0) {
+  async delete(id: string) {
+    try {
+      await this.prisma.user.delete({
+        where: { id },
+      });
+    } catch {
       throw new NotFoundException('User not found');
     }
   }
-  // TODO: Additional logic to handle artist deletion in related entities
-  // - Favorites
 }

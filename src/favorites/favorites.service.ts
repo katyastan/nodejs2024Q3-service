@@ -1,112 +1,97 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-  Inject,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
-import { Favorites } from './favorites.entity';
-import { Artist } from '../artists/artists.entity';
-import { Album } from '../albums/albums.entity';
-import { Track } from '../tracks/tracks.entity';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class FavoritesService {
-  constructor(
-    @InjectRepository(Favorites)
-    private favoritesRepository: Repository<Favorites>,
-
-    @InjectRepository(Artist)
-    private artistsRepository: Repository<Artist>,
-
-    @InjectRepository(Album)
-    private albumsRepository: Repository<Album>,
-
-    @InjectRepository(Track)
-    private tracksRepository: Repository<Track>,
-  ) {}
-
-  private async getFavorites(): Promise<Favorites> {
-    let favorites = await this.favoritesRepository.findOne({
-      relations: ['artists', 'albums', 'tracks'],
-    });
-
-    if (!favorites) {
-      favorites = this.favoritesRepository.create();
-      await this.favoritesRepository.save(favorites);
-    }
-
-    return favorites;
-  }
+  constructor(private prisma: PrismaService) {}
 
   async getAllFavorites() {
-    const favorites = await this.getFavorites();
+    const artists = await this.prisma.favoriteArtist.findMany({
+      select: { artist: true },
+    });
+    const albums = await this.prisma.favoriteAlbum.findMany({
+      select: { album: true },
+    });
+    const tracks = await this.prisma.favoriteTrack.findMany({
+      select: { track: true },
+    });
+
     return {
-      artists: favorites.artists,
-      albums: favorites.albums,
-      tracks: favorites.tracks,
+      artists: artists.map((fa) => fa.artist),
+      albums: albums.map((fa) => fa.album),
+      tracks: tracks.map((ft) => ft.track),
     };
   }
 
-  async addArtistToFavorites(artistId: string): Promise<void> {
-    const artist = await this.artistsRepository.findOneBy({ id: artistId });
-    if (!artist) throw new UnprocessableEntityException('Artist does not exist');
-
-    const favorites = await this.getFavorites();
-
-    favorites.artists.push(artist);
-    await this.favoritesRepository.save(favorites);
+  async addArtistToFavorites(artistId: string) {
+    const artist = await this.prisma.artist.findUnique({
+      where: { id: artistId },
+    });
+    if (!artist) throw new NotFoundException('Artist does not exist');
+    try {
+      await this.prisma.favoriteArtist.create({
+        data: { artistId },
+      });
+    } catch {
+      throw new ConflictException('Artist is already in favorites');
+    }
   }
 
-  async removeArtistFromFavorites(artistId: string): Promise<void> {
-    const favorites = await this.getFavorites();
-
-    const index = favorites.artists.findIndex((artist) => artist.id === artistId);
-    if (index === -1) throw new NotFoundException('Artist not in favorites');
-
-    favorites.artists.splice(index, 1);
-    await this.favoritesRepository.save(favorites);
+  async removeArtistFromFavorites(artistId: string) {
+    try {
+      await this.prisma.favoriteArtist.delete({
+        where: { id: artistId },
+      });
+    } catch {
+      throw new NotFoundException('Artist not in favorites');
+    }
   }
 
-  async addAlbumToFavorites(albumId: string): Promise<void> {
-    const album = await this.albumsRepository.findOneBy({ id: albumId });
-    if (!album) throw new UnprocessableEntityException('Album does not exist');
-
-    const favorites = await this.getFavorites();
-
-    favorites.albums.push(album);
-    await this.favoritesRepository.save(favorites);
+  async addAlbumToFavorites(albumId: string) {
+    const album = await this.prisma.album.findUnique({
+      where: { id: albumId },
+    });
+    if (!album) throw new NotFoundException('Album does not exist');
+    try {
+      await this.prisma.favoriteAlbum.create({
+        data: { albumId },
+      });
+    } catch {
+      throw new ConflictException('Album is already in favorites');
+    }
   }
 
-  async removeAlbumFromFavorites(albumId: string): Promise<void> {
-    const favorites = await this.getFavorites();
-
-    const index = favorites.albums.findIndex((album) => album.id === albumId);
-    if (index === -1) throw new NotFoundException('Album not in favorites');
-
-    favorites.albums.splice(index, 1);
-    await this.favoritesRepository.save(favorites);
+  async removeAlbumFromFavorites(albumId: string) {
+    try {
+      await this.prisma.favoriteAlbum.delete({
+        where: { id: albumId },
+      });
+    } catch {
+      throw new NotFoundException('Album not in favorites');
+    }
   }
 
-  async addTrackToFavorites(trackId: string): Promise<void> {
-    const track = await this.tracksRepository.findOneBy({ id: trackId });
-    if (!track) throw new UnprocessableEntityException('Track does not exist');
-
-    const favorites = await this.getFavorites();
-
-    favorites.tracks.push(track);
-    await this.favoritesRepository.save(favorites);
+  async addTrackToFavorites(trackId: string) {
+    const track = await this.prisma.track.findUnique({
+      where: { id: trackId },
+    });
+    if (!track) throw new NotFoundException('Track does not exist');
+    try {
+      await this.prisma.favoriteTrack.create({
+        data: { trackId },
+      });
+    } catch {
+      throw new ConflictException('Track is already in favorites');
+    }
   }
 
-  async removeTrackFromFavorites(trackId: string): Promise<void> {
-    const favorites = await this.getFavorites();
-
-    const index = favorites.tracks.findIndex((track) => track.id === trackId);
-    if (index === -1) throw new NotFoundException('Track not in favorites');
-
-    favorites.tracks.splice(index, 1);
-    await this.favoritesRepository.save(favorites);
+  async removeTrackFromFavorites(trackId: string) {
+    try {
+      await this.prisma.favoriteTrack.delete({
+        where: { id: trackId },
+      });
+    } catch {
+      throw new NotFoundException('Track not in favorites');
+    }
   }
 }

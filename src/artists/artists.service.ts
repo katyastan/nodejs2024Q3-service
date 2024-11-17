@@ -1,52 +1,47 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
-import { Artist } from './artists.entity';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 
 @Injectable()
 export class ArtistsService {
-  constructor(
-    @InjectRepository(Artist) private artistsRepository: Repository<Artist>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
-  async findAll(): Promise<Artist[]> {
-    return await this.artistsRepository.find();
+  async findAll() {
+    return this.prisma.artist.findMany();
   }
 
-  async findById(id: string): Promise<Artist> {
-    const artist = await this.artistsRepository.findOneBy({ id });
-    if (!artist) throw new NotFoundException('Artist not found');
+  async findById(id: string) {
+    const artist = await this.prisma.artist.findUnique({
+      where: { id },
+    });
+    if (!artist) throw new NotFoundException('Artist not found.');
     return artist;
   }
 
-  async create(createArtistDto: CreateArtistDto): Promise<Artist> {
-    const artist = this.artistsRepository.create(createArtistDto);
-    return await this.artistsRepository.save(artist);
+  async create(createArtistDto: CreateArtistDto) {
+    return this.prisma.artist.create({
+      data: createArtistDto,
+    });
   }
 
-  async update(
-    id: string,
-    updateArtistDto: CreateArtistDto,
-  ): Promise<Artist> {
-    const artist = await this.artistsRepository.findOneBy({ id });
-    if (!artist) throw new NotFoundException('Artist not found');
-
-    Object.assign(artist, updateArtistDto);
-
-    return await this.artistsRepository.save(artist);
-  }
-
-  async delete(id: string): Promise<void> {
-    const result = await this.artistsRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException('Artist not found');
+  async update(id: string, updateArtistDto: CreateArtistDto) {
+    try {
+      return await this.prisma.artist.update({
+        where: { id },
+        data: updateArtistDto,
+      });
+    } catch {
+      throw new NotFoundException('Artist not found.');
     }
+  }
 
-    // TODO: Additional logic to handle artist deletion in related entities
-    // - Tracks
-    // - Albums
-    // - Favorites
+  async delete(id: string) {
+    try {
+      await this.prisma.artist.delete({
+        where: { id },
+      });
+    } catch {
+      throw new NotFoundException('Artist not found.');
+    }
   }
 }

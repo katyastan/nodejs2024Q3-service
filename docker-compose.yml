@@ -1,35 +1,51 @@
-version: '3.8'
-
 services:
-  app:
-    image: katyastan/nodejs2024q3-service-app:latest
-    container_name: app
-    restart: always
-    depends_on:
-      - db
-    env_file: .env
-    ports:
-      - '4000:4000'
-    networks:
-      - app-network
 
-  db:
+  postgres:
     image: postgres:13-alpine
-    container_name: db
+    container_name: postgres
     restart: always
-    env_file: .env.postgres
+    env_file: .env
     volumes:
-      - db_data:/var/lib/postgresql/data
-      - db-logs:/var/log/postgresql
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  # migration:
+  #   image: katyastan/nodejs2024q3-service-app:latest
+  #   container_name: migration
+  #   restart: 'on-failure'
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   env_file: .env
+  #   networks:
+  #     - app-network
+  #   command: npx prisma migrate deploy --preview-feature
+  #   # npx prisma migrate dev --name init
+
+  # app:
+  #   image: katyastan/nodejs2024q3-service-app:latest
+  #   container_name: app
+  #   restart: always
+  #   depends_on:
+  #     migration:
+  #       condition: service_completed_successfully
+  #   env_file: .env
+  #   ports:
+  #     - '4000:4000'
+  #   networks:
+  #     - app-network
 
 networks:
   app-network:
     driver: bridge
 
 volumes:
-  db_data:
-  db-logs:
+  postgres_data:

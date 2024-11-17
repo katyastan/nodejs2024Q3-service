@@ -1,101 +1,152 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
-import { Track } from './tracks.entity';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateTrackDto } from './dto/create-track.dto';
-import { Artist } from '../artists/artists.entity';
-import { Album } from '../albums/albums.entity';
+
 
 @Injectable()
 export class TracksService {
-  constructor(
-    @InjectRepository(Track)
-    private tracksRepository: Repository<Track>,
+  constructor(private prisma: PrismaService) {}
 
-    @InjectRepository(Artist)
-    private artistsRepository: Repository<Artist>,
-
-    @InjectRepository(Album)
-    private albumsRepository: Repository<Album>,
-  ) {}
-
-  async findAll(): Promise<Track[]> {
-    return await this.tracksRepository.find({
-      relations: ['artist', 'album'],
+  async findAll() {
+    return this.prisma.track.findMany({
+      select: {
+        id: true,
+        name: true,
+        duration: true,
+        artist: {
+          select: {
+            id: true,
+            name: true,
+            grammy: true,
+          },
+        },
+        album: {
+          select: {
+            id: true,
+            name: true,
+            year: true,
+          },
+        },
+      },
     });
   }
 
-  async findById(id: string): Promise<Track> {
-    const track = await this.tracksRepository.findOne({
+  async findById(id: string) {
+    const track = await this.prisma.track.findUnique({
       where: { id },
-      relations: ['artist', 'album'],
+      select: {
+        id: true,
+        name: true,
+        duration: true,
+        artist: {
+          select: {
+            id: true,
+            name: true,
+            grammy: true,
+          },
+        },
+        album: {
+          select: {
+            id: true,
+            name: true,
+            year: true,
+          },
+        },
+      },
     });
     if (!track) throw new NotFoundException('Track not found');
     return track;
   }
 
-  async create(createTrackDto: CreateTrackDto): Promise<Track> {
-    const { name, duration, artistId, albumId } = createTrackDto;
-
-    const track = this.tracksRepository.create({
-      name,
-      duration,
+  async create(createTrackDto: CreateTrackDto) {
+    return this.prisma.track.create({
+      data: {
+        name: createTrackDto.name,
+        duration: createTrackDto.duration,
+        artist: {
+          connect: createTrackDto.artistId
+            ? { id: createTrackDto.artistId }
+            : undefined,
+        },
+        album: {
+          connect: createTrackDto.albumId
+            ? { id: createTrackDto.albumId }
+            : undefined,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        duration: true,
+        artist: {
+          select: {
+            id: true,
+            name: true,
+            grammy: true,
+          },
+        },
+        album: {
+          select: {
+            id: true,
+            name: true,
+            year: true,
+          },
+        },
+      },
     });
-
-    if (artistId) {
-      const artist = await this.artistsRepository.findOneBy({ id: artistId});
-      if (!artist) throw new NotFoundException('Artist not found');
-      track.artist = artist;
-    }
-
-    if (albumId) {
-      const album = await this.albumsRepository.findOneBy({ id: albumId });
-      if (!album) throw new NotFoundException('Album not found');
-      track.album = album;
-    }
-
-    return await this.tracksRepository.save(track);
   }
 
-  async update(id: string, updateTrackDto: CreateTrackDto): Promise<Track> {
-    const track = await this.tracksRepository.findOneBy({ id });
+  async update(id: string, updateTrackDto: CreateTrackDto) {
+    const track = await this.prisma.track.findUnique({
+      where: { id },
+    });
     if (!track) throw new NotFoundException('Track not found');
 
-    const { name, duration, artistId, albumId } = updateTrackDto;
-
-    track.name = name;
-    track.duration = duration;
-
-    if (artistId !== undefined) {
-      if (artistId === null) {
-        track.artist = null;
-      } else {
-        const artist = await this.artistsRepository.findOneBy({ id: artistId });
-        if (!artist) throw new NotFoundException('Artist not found');
-        track.artist = artist;
-      }
-    }
-
-    if (albumId !== undefined) {
-      if (albumId === null) {
-        track.album = null;
-      } else {
-        const album = await this.albumsRepository.findOneBy({ id: albumId });
-        if (!album) throw new NotFoundException('Album not found');
-        track.album = album;
-      }
-    }
-
-    return await this.tracksRepository.save(track);
+    return this.prisma.track.update({
+      where: { id },
+      data: {
+        name: updateTrackDto.name,
+        duration: updateTrackDto.duration,
+        artist: {
+          connect: updateTrackDto.artistId
+            ? { id: updateTrackDto.artistId }
+            : undefined,
+        },
+        album: {
+          connect: updateTrackDto.albumId
+            ? { id: updateTrackDto.albumId }
+            : undefined,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        duration: true,
+        artist: {
+          select: {
+            id: true,
+            name: true,
+            grammy: true,
+          },
+        },
+        album: {
+          select: {
+            id: true,
+            name: true,
+            year: true,
+          },
+        },
+      },
+    });
   }
 
   async delete(id: string): Promise<void> {
-    const result = await this.tracksRepository.delete(id);
-    if (result.affected === 0) {
+    try {
+      await this.prisma.track.delete({
+        where: { id },
+      });
+    } catch {
       throw new NotFoundException('Track not found');
     }
-    // TODO: Additional logic to handle artist deletion in related entities
-    // - Favorites
   }
 }
