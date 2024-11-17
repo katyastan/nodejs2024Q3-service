@@ -2,22 +2,23 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
+  async findAll(): Promise<Omit<User, 'password'>[]> {
     return this.prisma.user.findMany();
   }
 
-  async findById(id: string) {
+  async findById(id: string): Promise<Omit<User, 'password'>> {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('User not found');
     return user;
   }
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<Omit<User, 'password'>> {
     const now = BigInt(Date.now());
     return this.prisma.user.create({
       data: {
@@ -30,7 +31,7 @@ export class UsersService {
     });
   }
 
-  async update(id: string, updatePasswordDto: UpdatePasswordDto) {
+  async update(id: string, updatePasswordDto: UpdatePasswordDto): Promise<Omit<User, 'password'>> {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('User not found');
 
@@ -51,7 +52,7 @@ export class UsersService {
     });
   }
 
-  async delete(id: string) {
+  async delete(id: string): Promise<void> {
     try {
       await this.prisma.user.delete({ where: { id } });
     } catch {

@@ -4,30 +4,25 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { FavoriteAlbum, FavoriteArtist, FavoriteTrack } from '@prisma/client';
 
 @Injectable()
 export class FavoritesService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllFavorites() {
-    const artists = await this.prisma.favoriteArtist.findMany({
-      select: { artist: true },
-    });
-    const albums = await this.prisma.favoriteAlbum.findMany({
-      select: { album: true },
-    });
-    const tracks = await this.prisma.favoriteTrack.findMany({
-      select: { track: true },
-    });
-
+  async getAllFavorites(): Promise<{
+    artists: FavoriteArtist[];
+    albums: FavoriteAlbum[];
+    tracks: FavoriteTrack[];
+  }> {
     return {
-      artists: artists.map((fa) => fa.artist),
-      albums: albums.map((fa) => fa.album),
-      tracks: tracks.map((ft) => ft.track),
+      artists: await this.prisma.favoriteArtist.findMany(),
+      albums: await this.prisma.favoriteAlbum.findMany(),
+      tracks: await this.prisma.favoriteTrack.findMany(),
     };
   }
 
-  async addArtistToFavorites(artistId: string) {
+  async addArtistToFavorites(artistId: string): Promise<void> {
     const artist = await this.prisma.artist.findUnique({
       where: { id: artistId },
     });
@@ -39,7 +34,7 @@ export class FavoritesService {
     }
   }
 
-  async removeArtistFromFavorites(artistId: string) {
+  async removeArtistFromFavorites(artistId: string): Promise<void> {
     try {
       await this.prisma.favoriteArtist.delete({ where: { id: artistId } });
     } catch {
@@ -47,7 +42,7 @@ export class FavoritesService {
     }
   }
 
-  async addAlbumToFavorites(albumId: string) {
+  async addAlbumToFavorites(albumId: string): Promise<void> {
     const album = await this.prisma.album.findUnique({
       where: { id: albumId },
     });
@@ -59,7 +54,7 @@ export class FavoritesService {
     }
   }
 
-  async removeAlbumFromFavorites(albumId: string) {
+  async removeAlbumFromFavorites(albumId: string): Promise<void> {
     try {
       await this.prisma.favoriteAlbum.delete({ where: { id: albumId } });
     } catch {
@@ -67,7 +62,7 @@ export class FavoritesService {
     }
   }
 
-  async addTrackToFavorites(trackId: string) {
+  async addTrackToFavorites(trackId: string): Promise<void> {
     const track = await this.prisma.track.findUnique({
       where: { id: trackId },
     });
@@ -79,7 +74,7 @@ export class FavoritesService {
     }
   }
 
-  async removeTrackFromFavorites(trackId: string) {
+  async removeTrackFromFavorites(trackId: string): Promise<void> {
     try {
       await this.prisma.favoriteTrack.delete({ where: { id: trackId } });
     } catch {
