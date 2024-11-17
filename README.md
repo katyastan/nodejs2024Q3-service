@@ -88,3 +88,18 @@ npm run swagger
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+
+
+
+
+
+To start the Application:
+```bash
+npm start docker:compose
+```
+
+To vulnerabilities scanning
+```bash
+npm start docker:scan
+```
