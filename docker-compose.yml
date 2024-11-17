@@ -2,25 +2,14 @@ version: '3.8'
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: katyastan/nodejs2024q3-service-app:latest
     container_name: app
     restart: always
     depends_on:
       - db
-    environment:
-      - PORT=4000
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=postgres
+    env_file: .env
     ports:
       - '4000:4000'
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
     networks:
       - app-network
 
@@ -28,12 +17,11 @@ services:
     image: postgres:13-alpine
     container_name: db
     restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+    env_file: .env.postgres
     volumes:
       - db_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
     networks:
       - app-network
 

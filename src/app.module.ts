@@ -8,6 +8,10 @@ import { AlbumsModule } from './albums/albums.module';
 import { TracksModule } from './tracks/tracks.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { get } from 'http';
+import { getTypeOrmConfig } from './config/typeorm';
+
+
 
 
 @Module({
@@ -17,18 +21,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: +configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: false, 
-        migrationsRun: true,
-        migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-      }),
+      useFactory: getTypeOrmConfig,
       inject: [ConfigService],
     }),  
     UsersModule,

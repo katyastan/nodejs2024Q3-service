@@ -4,16 +4,11 @@ import { Repository } from 'typeorm';
 
 import { Artist } from './artists.entity';
 import { CreateArtistDto } from './dto/create-artist.dto';
-import { Album } from 'src/albums/albums.entity';
 
 @Injectable()
 export class ArtistsService {
   constructor(
-    @InjectRepository(Artist)
-    private artistsRepository: Repository<Artist>,
-    @InjectRepository(Album)
-    private albumsRepository: Repository<Album>,
-
+    @InjectRepository(Artist) private artistsRepository: Repository<Artist>,
   ) {}
 
   async findAll(): Promise<Artist[]> {
