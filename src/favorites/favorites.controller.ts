@@ -23,8 +23,8 @@ export class FavoritesController {
     description: 'List of favorites.',
     type: [FavoritesResponseDto],
   })
-  getAll() {
-    return this.favoritesService.getAllFavorites();
+  async getAll() {
+    return await this.favoritesService.getAllFavorites();
   }
 
   @Post('artist/:id')

@@ -35,7 +35,7 @@ export class UsersController {
     type: [UserResponseDto],
   })
   async getAll() {
-    await this.usersService.findAll();
+    return await this.usersService.findAll();
   }
 
   @Get(':id')
@@ -49,7 +49,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
-    await this.usersService.findById(id);
+    return await this.usersService.findById(id);
   }
 
   @Post()
@@ -63,7 +63,7 @@ export class UsersController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   async create(@Body() createUserDto: CreateUserDto) {
-    await this.usersService.create(createUserDto);
+    return await this.usersService.create(createUserDto);
   }
 
   @Put(':id')
@@ -82,7 +82,7 @@ export class UsersController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    await this.usersService.update(id, updatePasswordDto);
+    return await this.usersService.update(id, updatePasswordDto);
   }
 
   @Delete(':id')

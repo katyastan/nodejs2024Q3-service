@@ -27,7 +27,7 @@ export class TracksController {
     type: [TrackResponseDto],
   })
   async getAll() {
-    await this.tracksService.findAll();
+    return await this.tracksService.findAll();
   }
 
   @Get(':id')
@@ -41,7 +41,7 @@ export class TracksController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Track not found.' })
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
-    await this.tracksService.findById(id);
+    return await this.tracksService.findById(id);
   }
 
   @Post()
@@ -54,7 +54,7 @@ export class TracksController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   async create(@Body() createTrackDto: CreateTrackDto) {
-    await this.tracksService.create(createTrackDto);
+    return await this.tracksService.create(createTrackDto);
   }
 
   @Put(':id')
@@ -71,7 +71,7 @@ export class TracksController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateTrackDto: CreateTrackDto,
   ) {
-    await this.tracksService.update(id, updateTrackDto);
+    return await this.tracksService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
