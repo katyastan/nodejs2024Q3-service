@@ -23,10 +23,8 @@ export class FavoritesService {
   }
 
   async addArtistToFavorites(artistId: string): Promise<void> {
-    const artist = await this.prisma.artist.findUnique({
-      where: { id: artistId },
-    });
-    if (!artist) throw new NotFoundException('Artist does not exist');
+    const artist = await this.prisma.artist.findUnique({ where: { id: artistId } });
+    if (!artist) throw new NotFoundException('Artist not found');
     try {
       await this.prisma.favoriteArtist.create({ data: { artistId } });
     } catch {
@@ -46,7 +44,7 @@ export class FavoritesService {
     const album = await this.prisma.album.findUnique({
       where: { id: albumId },
     });
-    if (!album) throw new NotFoundException('Album does not exist');
+    if (!album) throw new NotFoundException('Album not found');
     try {
       await this.prisma.favoriteAlbum.create({ data: { albumId } });
     } catch {
@@ -66,7 +64,7 @@ export class FavoritesService {
     const track = await this.prisma.track.findUnique({
       where: { id: trackId },
     });
-    if (!track) throw new NotFoundException('Track does not exist');
+    if (!track) throw new NotFoundException('Track not found');
     try {
       await this.prisma.favoriteTrack.create({ data: { trackId } });
     } catch {
