@@ -2,44 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
-
 @Injectable()
 export class AlbumsService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.album.findMany({
-      select: {
-        id: true,
-        name: true,
-        year: true,
-        artist: {
-          select: {
-            id: true,
-            name: true,
-            grammy: true,
-          },
-        },
-      },
-    });
+    return this.prisma.album.findMany();
   }
 
   async findById(id: string) {
-    const album = await this.prisma.album.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        year: true,
-        artist: {
-          select: {
-            id: true,
-            name: true,
-            grammy: true,
-          },
-        },
-      },
-    });
+    const album = await this.prisma.album.findUnique({ where: { id } });
     if (!album) throw new NotFoundException('Album not found');
     return album;
   }
@@ -55,25 +27,11 @@ export class AlbumsService {
             : undefined,
         },
       },
-      select: {
-        id: true,
-        name: true,
-        year: true,
-        artist: {
-          select: {
-            id: true,
-            name: true,
-            grammy: true,
-          },
-        },
-      },
     });
   }
 
   async update(id: string, updateAlbumDto: CreateAlbumDto) {
-    const album = await this.prisma.album.findUnique({
-      where: { id },
-    });
+    const album = await this.prisma.album.findUnique({ where: { id } });
     if (!album) throw new NotFoundException('Album not found');
 
     return this.prisma.album.update({
@@ -87,28 +45,16 @@ export class AlbumsService {
             : undefined,
         },
       },
-      select: {
-        id: true,
-        name: true,
-        year: true,
-        artist: {
-          select: {
-            id: true,
-            name: true,
-            grammy: true,
-          },
-        },
-      },
     });
   }
 
   async delete(id: string) {
     try {
-      await this.prisma.album.delete({
-        where: { id },
-      });
+      await this.prisma.album.delete({ where: { id } });
     } catch {
       throw new NotFoundException('Album not found');
     }
+    await this.prisma.favoriteAlbum.deleteMany({ where: { albumId: id } });
+    await this.prisma.track.deleteMany({ where: { albumId: id } });
   }
 }

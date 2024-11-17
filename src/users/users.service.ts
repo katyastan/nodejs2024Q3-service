@@ -8,28 +8,11 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.user.findMany({
-      select: {
-        id: true,
-        login: true,
-        version: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    return this.prisma.user.findMany();
   }
 
   async findById(id: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        login: true,
-        version: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('User not found');
     return user;
   }
@@ -44,20 +27,11 @@ export class UsersService {
         createdAt: now,
         updatedAt: now,
       },
-      select: {
-        id: true,
-        login: true,
-        version: true,
-        createdAt: true,
-        updatedAt: true,
-      },
     });
   }
 
   async update(id: string, updatePasswordDto: UpdatePasswordDto) {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-    });
+    const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('User not found');
 
     if (user.password !== updatePasswordDto.oldPassword) {
@@ -74,21 +48,12 @@ export class UsersService {
         version: updatedVersion,
         updatedAt: now,
       },
-      select: {
-        id: true,
-        login: true,
-        version: true,
-        createdAt: true,
-        updatedAt: true,
-      },
     });
   }
 
   async delete(id: string) {
     try {
-      await this.prisma.user.delete({
-        where: { id },
-      });
+      await this.prisma.user.delete({ where: { id } });
     } catch {
       throw new NotFoundException('User not found');
     }

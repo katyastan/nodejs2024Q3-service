@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -29,9 +33,7 @@ export class FavoritesService {
     });
     if (!artist) throw new NotFoundException('Artist does not exist');
     try {
-      await this.prisma.favoriteArtist.create({
-        data: { artistId },
-      });
+      await this.prisma.favoriteArtist.create({ data: { artistId } });
     } catch {
       throw new ConflictException('Artist is already in favorites');
     }
@@ -39,9 +41,7 @@ export class FavoritesService {
 
   async removeArtistFromFavorites(artistId: string) {
     try {
-      await this.prisma.favoriteArtist.delete({
-        where: { id: artistId },
-      });
+      await this.prisma.favoriteArtist.delete({ where: { id: artistId } });
     } catch {
       throw new NotFoundException('Artist not in favorites');
     }
@@ -53,9 +53,7 @@ export class FavoritesService {
     });
     if (!album) throw new NotFoundException('Album does not exist');
     try {
-      await this.prisma.favoriteAlbum.create({
-        data: { albumId },
-      });
+      await this.prisma.favoriteAlbum.create({ data: { albumId } });
     } catch {
       throw new ConflictException('Album is already in favorites');
     }
@@ -63,9 +61,7 @@ export class FavoritesService {
 
   async removeAlbumFromFavorites(albumId: string) {
     try {
-      await this.prisma.favoriteAlbum.delete({
-        where: { id: albumId },
-      });
+      await this.prisma.favoriteAlbum.delete({ where: { id: albumId } });
     } catch {
       throw new NotFoundException('Album not in favorites');
     }
@@ -77,9 +73,7 @@ export class FavoritesService {
     });
     if (!track) throw new NotFoundException('Track does not exist');
     try {
-      await this.prisma.favoriteTrack.create({
-        data: { trackId },
-      });
+      await this.prisma.favoriteTrack.create({ data: { trackId } });
     } catch {
       throw new ConflictException('Track is already in favorites');
     }
@@ -87,9 +81,7 @@ export class FavoritesService {
 
   async removeTrackFromFavorites(trackId: string) {
     try {
-      await this.prisma.favoriteTrack.delete({
-        where: { id: trackId },
-      });
+      await this.prisma.favoriteTrack.delete({ where: { id: trackId } });
     } catch {
       throw new NotFoundException('Track not in favorites');
     }

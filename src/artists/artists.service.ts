@@ -11,17 +11,13 @@ export class ArtistsService {
   }
 
   async findById(id: string) {
-    const artist = await this.prisma.artist.findUnique({
-      where: { id },
-    });
+    const artist = await this.prisma.artist.findUnique({ where: { id } });
     if (!artist) throw new NotFoundException('Artist not found.');
     return artist;
   }
 
   async create(createArtistDto: CreateArtistDto) {
-    return this.prisma.artist.create({
-      data: createArtistDto,
-    });
+    return this.prisma.artist.create({ data: createArtistDto });
   }
 
   async update(id: string, updateArtistDto: CreateArtistDto) {
@@ -31,17 +27,18 @@ export class ArtistsService {
         data: updateArtistDto,
       });
     } catch {
-      throw new NotFoundException('Artist not found.');
+      throw new NotFoundException('Artist not found');
     }
   }
 
   async delete(id: string) {
     try {
-      await this.prisma.artist.delete({
-        where: { id },
-      });
+      await this.prisma.artist.delete({ where: { id } });
     } catch {
-      throw new NotFoundException('Artist not found.');
+      throw new NotFoundException('Artist not found');
     }
+    await this.prisma.favoriteArtist.deleteMany({ where: { artistId: id } });
+    await this.prisma.album.deleteMany({ where: { artistId: id } });
+    await this.prisma.track.deleteMany({ where: { artistId: id } });
   }
 }

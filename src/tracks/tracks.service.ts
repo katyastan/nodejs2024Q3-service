@@ -8,52 +8,11 @@ export class TracksService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.track.findMany({
-      select: {
-        id: true,
-        name: true,
-        duration: true,
-        artist: {
-          select: {
-            id: true,
-            name: true,
-            grammy: true,
-          },
-        },
-        album: {
-          select: {
-            id: true,
-            name: true,
-            year: true,
-          },
-        },
-      },
-    });
+    return this.prisma.track.findMany();
   }
 
   async findById(id: string) {
-    const track = await this.prisma.track.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        duration: true,
-        artist: {
-          select: {
-            id: true,
-            name: true,
-            grammy: true,
-          },
-        },
-        album: {
-          select: {
-            id: true,
-            name: true,
-            year: true,
-          },
-        },
-      },
-    });
+    const track = await this.prisma.track.findUnique({ where: { id } });
     if (!track) throw new NotFoundException('Track not found');
     return track;
   }
@@ -74,34 +33,12 @@ export class TracksService {
             : undefined,
         },
       },
-      select: {
-        id: true,
-        name: true,
-        duration: true,
-        artist: {
-          select: {
-            id: true,
-            name: true,
-            grammy: true,
-          },
-        },
-        album: {
-          select: {
-            id: true,
-            name: true,
-            year: true,
-          },
-        },
-      },
     });
   }
 
   async update(id: string, updateTrackDto: CreateTrackDto) {
-    const track = await this.prisma.track.findUnique({
-      where: { id },
-    });
+    const track = await this.prisma.track.findUnique({ where: { id } });
     if (!track) throw new NotFoundException('Track not found');
-
     return this.prisma.track.update({
       where: { id },
       data: {
@@ -118,35 +55,15 @@ export class TracksService {
             : undefined,
         },
       },
-      select: {
-        id: true,
-        name: true,
-        duration: true,
-        artist: {
-          select: {
-            id: true,
-            name: true,
-            grammy: true,
-          },
-        },
-        album: {
-          select: {
-            id: true,
-            name: true,
-            year: true,
-          },
-        },
-      },
     });
   }
 
   async delete(id: string): Promise<void> {
     try {
-      await this.prisma.track.delete({
-        where: { id },
-      });
+      await this.prisma.track.delete({ where: { id } });
     } catch {
       throw new NotFoundException('Track not found');
     }
+    await this.prisma.favoriteTrack.deleteMany({ where: { trackId: id } });
   }
 }
