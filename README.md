@@ -91,15 +91,19 @@ For more information, visit: https://code.visualstudio.com/docs/editor/debugging
 
 
 
+## Running app in Docker Desktop
 
-
-
-To start the Application:
+To start the Application with DB:
 ```bash
-npm start docker:compose
+npm run docker:compose
+```
+
+To run Tests against app:
+```bash
+npm run test
 ```
 
 To vulnerabilities scanning
 ```bash
-npm start docker:scan
+npm run docker:scan
 ```
