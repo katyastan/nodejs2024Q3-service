@@ -17,7 +17,7 @@ git clone git@github.com:katyastan/nodejs2024Q3-service.git
 ## Installing NPM modules
 
 ```bash
-npm install --force
+npm install
 ```
 
 ## Port
@@ -88,3 +88,30 @@ npm run swagger
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+
+
+## Running app in Docker Desktop
+
+To start the Application with DB in production mode (doesn`t use local Typescript code):
+```bash
+npm run docker:compose:prod
+```
+
+To run the Application in developer mode (use Typescript code in local folder) with restarting upon changes implemented into src folder:
+```bash
+npm run docker:compose:dev
+```
+
+To run Tests against app:
+```bash
+npm run test
+```
+
+To vulnerabilities scanning
+```bash
+npm run docker:scan
+```
+
+
+The image of my application is available on DockerHub : [DockerHub](https://hub.docker.com/repository/docker/katyastan/nodejs2024q3-service-app/tags)
