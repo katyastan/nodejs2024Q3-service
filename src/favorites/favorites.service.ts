@@ -40,7 +40,7 @@ export class FavoritesService {
 
   async removeArtistFromFavorites(artistId: string): Promise<void> {
     try {
-      await this.prisma.favoriteArtist.delete({ where: { id: artistId } });
+      await this.prisma.favoriteArtist.delete({ where: { artistId } });
     } catch {
       throw new NotFoundException('Artist not in favorites');
     }
@@ -57,7 +57,7 @@ export class FavoritesService {
 
   async removeAlbumFromFavorites(albumId: string): Promise<void> {
     try {
-      await this.prisma.favoriteAlbum.delete({ where: { id: albumId } });
+      await this.prisma.favoriteAlbum.delete({ where: { albumId } });
     } catch {
       throw new NotFoundException('Album not in favorites');
     }
@@ -74,7 +74,7 @@ export class FavoritesService {
 
   async removeTrackFromFavorites(trackId: string): Promise<void> {
     try {
-      await this.prisma.favoriteTrack.delete({ where: { id: trackId } });
+      await this.prisma.favoriteTrack.delete({ where: { trackId } });
     } catch {
       throw new NotFoundException('Track not in favorites');
     }

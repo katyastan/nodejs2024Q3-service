@@ -67,6 +67,15 @@ CREATE TABLE "FavoriteTrack" (
 -- CreateIndex
 CREATE UNIQUE INDEX "User_login_key" ON "User"("login");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "FavoriteArtist_artistId_key" ON "FavoriteArtist"("artistId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "FavoriteAlbum_albumId_key" ON "FavoriteAlbum"("albumId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "FavoriteTrack_trackId_key" ON "FavoriteTrack"("trackId");
+
 -- AddForeignKey
 ALTER TABLE "Album" ADD CONSTRAINT "Album_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "Artist"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
