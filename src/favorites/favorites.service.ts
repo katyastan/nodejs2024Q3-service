@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Album, Artist, FavoriteAlbum, FavoriteArtist, FavoriteTrack, Track } from '@prisma/client';
@@ -29,8 +30,7 @@ export class FavoritesService {
   }
 
   async addArtistToFavorites(artistId: string): Promise<void> {
-    const artist = await this.prisma.artist.findUnique({ where: { id: artistId } });
-    if (!artist) throw new NotFoundException('Artist not found');
+    await this.assertArtistExists(artistId);
     try {
       await this.prisma.favoriteArtist.create({ data: { artistId } });
     } catch {
@@ -47,10 +47,7 @@ export class FavoritesService {
   }
 
   async addAlbumToFavorites(albumId: string): Promise<void> {
-    const album = await this.prisma.album.findUnique({
-      where: { id: albumId },
-    });
-    if (!album) throw new NotFoundException('Album not found');
+    await this.assertAlbumExists(albumId);
     try {
       await this.prisma.favoriteAlbum.create({ data: { albumId } });
     } catch {
@@ -67,10 +64,7 @@ export class FavoritesService {
   }
 
   async addTrackToFavorites(trackId: string): Promise<void> {
-    const track = await this.prisma.track.findUnique({
-      where: { id: trackId },
-    });
-    if (!track) throw new NotFoundException('Track not found');
+    await this.assertTrackExists(trackId);
     try {
       await this.prisma.favoriteTrack.create({ data: { trackId } });
     } catch {
@@ -84,5 +78,20 @@ export class FavoritesService {
     } catch {
       throw new NotFoundException('Track not in favorites');
     }
+  }
+
+  private async assertArtistExists(artistId: string) {
+    const artist = await this.prisma.artist.findUnique({ where: { id: artistId } });
+    if (!artist) throw new UnprocessableEntityException('Artist does not exist');
+  }
+
+  private async assertAlbumExists(albumId: string) {
+    const album = await this.prisma.album.findUnique({ where: { id: albumId } });
+    if (!album) throw new UnprocessableEntityException('Album does not exist');
+  }
+
+  private async  assertTrackExists(trackId: string) {
+    const track = await this.prisma.track.findUnique({ where: { id: trackId } });
+    if (!track) throw new UnprocessableEntityException('Track does not exist');
   }
 }
