@@ -9,7 +9,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - postgres_logs:/var/lib/postgresql
     ports:
-      - '5432:5432'
+      - '${DB_PORT}:${DB_PORT}'
     networks:
       - app-network
     healthcheck:
@@ -39,13 +39,13 @@ services:
         condition: service_completed_successfully
     env_file: .env
     ports:
-      - '4000:4000'
+      - '${PORT}:${PORT}'
     networks:
       - app-network
 
 networks:
   app-network:
-    driver: bridge
+    driver: ${DRIVER}
 
 volumes:
   postgres_data:
