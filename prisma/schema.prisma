@@ -12,8 +12,8 @@ model User {
   login     String   @unique
   password  String
   version   Int
-  createdAt BigInt
-  updatedAt BigInt
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
 }
 
 model Artist {
@@ -50,17 +50,17 @@ model Track {
 model FavoriteArtist {
   id       String  @id @default(uuid())
   artistId String
-  artist   Artist  @relation(fields: [artistId], references: [id])
+  artist   Artist  @relation(fields: [artistId], references: [id], onDelete: Cascade)
 }
 
 model FavoriteAlbum {
   id       String  @id @default(uuid())
   albumId  String
-  album    Album   @relation(fields: [albumId], references: [id])
+  album    Album   @relation(fields: [albumId], references: [id], onDelete: Cascade)
 }
 
 model FavoriteTrack {
   id       String  @id @default(uuid())
   trackId  String
-  track    Track   @relation(fields: [trackId], references: [id])
+  track    Track   @relation(fields: [trackId], references: [id], onDelete: Cascade)
 }

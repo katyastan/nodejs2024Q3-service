@@ -38,8 +38,5 @@ export class ArtistsService {
     } catch {
       throw new NotFoundException('Artist not found');
     }
-    await this.prisma.favoriteArtist.deleteMany({ where: { artistId: id } });
-    await this.prisma.album.deleteMany({ where: { artistId: id } });
-    await this.prisma.track.deleteMany({ where: { artistId: id } });
   }
 }

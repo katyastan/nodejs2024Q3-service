@@ -4,21 +4,27 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { FavoriteAlbum, FavoriteArtist, FavoriteTrack } from '@prisma/client';
+import { Album, Artist, FavoriteAlbum, FavoriteArtist, FavoriteTrack, Track } from '@prisma/client';
 
 @Injectable()
 export class FavoritesService {
   constructor(private prisma: PrismaService) {}
 
   async getAllFavorites(): Promise<{
-    artists: FavoriteArtist[];
-    albums: FavoriteAlbum[];
-    tracks: FavoriteTrack[];
+    artists: Artist[];
+    albums: Album[];
+    tracks: Track[];
   }> {
     return {
-      artists: await this.prisma.favoriteArtist.findMany(),
-      albums: await this.prisma.favoriteAlbum.findMany(),
-      tracks: await this.prisma.favoriteTrack.findMany(),
+      artists: await this.prisma.favoriteArtist.findMany().then((favorites) => {
+        return this.prisma.artist.findMany({ where: { id: { in: favorites.map((fav) => fav.artistId) } } });
+      }),
+      albums: await this.prisma.favoriteAlbum.findMany().then((favorites) => {
+        return this.prisma.album.findMany({ where: { id: { in: favorites.map((fav) => fav.albumId) } } });
+      }),
+      tracks: await this.prisma.favoriteTrack.findMany().then((favorites) => {
+        return this.prisma.track.findMany({ where: { id: { in: favorites.map((fav) => fav.trackId) } } });
+      }),
     };
   }
 
