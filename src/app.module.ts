@@ -10,6 +10,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { LoggingService } from './logging/logging.service';
 import { AuthModule } from './auth/auth.module';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { AuthModule } from './auth/auth.module';
   controllers: [AppController],
   providers: [
     AppService,
-    LoggingService
+    LoggingService,
+    JwtStrategy
   ],
 })
 export class AppModule {}
