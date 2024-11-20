@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
@@ -20,9 +20,20 @@ export class AuthController {
   @Post('login')
   @ApiResponse({ status: 200, description: 'Login successful.' })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
-  @ApiResponse({ status: 403, description: 'Authentication failed.' })
+  @ApiResponse({ status: 403, description: 'Authentication failed. No user with such login, password' })
   async login(@Body() loginDto: LoginDto) {
     const token = await this.authService.login(loginDto);
     return token;
+  }
+
+  @Post('refresh')
+  @ApiResponse({ status: 200, description: 'Token refreshed.' })
+  @ApiResponse({ status: 401, description: 'Invalid token.' })
+  @ApiResponse({ status: 403, description: 'Authentication failed.' })
+  async refresh(@Body('refreshToken') refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('No refresh token provided');
+    }
+    return this.authService.refresh(refreshToken);
   }
 }
