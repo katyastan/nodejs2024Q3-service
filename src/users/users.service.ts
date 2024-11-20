@@ -111,4 +111,8 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
   }
+
+  async findByLogin(login: string) {
+    return this.prisma.user.findUnique({ where: { login } });
+  }
 }
