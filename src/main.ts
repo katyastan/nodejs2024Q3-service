@@ -5,6 +5,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { LoggingService } from './logging/logging.service';
 import { AllExceptionsFilter } from './filters/exeptions.filter';
+import { Request, Response } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,5 +28,21 @@ async function bootstrap() {
 
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
+
+  
+  app.use((req: Request, res: Response, next: Function) => {
+    const { method, originalUrl, query, body } = req;
+
+    res.on('finish', () => {
+      const { statusCode } = res;
+      loggingService.log(
+        `${method} ${originalUrl} ${JSON.stringify(query)} ${JSON.stringify(
+          body,
+        )} - ${statusCode}`,
+      );
+    });
+    next();
+  });
 }
+
 bootstrap();
