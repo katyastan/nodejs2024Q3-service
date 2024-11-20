@@ -5,7 +5,7 @@ import * as path from 'path';
 @Injectable()
 export class LoggingService implements LoggerService {
   private logStream = fs.createWriteStream(
-    path.join(__dirname, '../../logs/app.log'),
+    path.join(__dirname, '../../app.log'),
     { flags: 'a' },
   );
 

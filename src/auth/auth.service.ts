@@ -26,22 +26,17 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const user = await this.usersService.findByLogin(loginDto.login);
 
-    const payload = { userId: user.id, login: user.login };
-    const accessToken = this.jwtService.sign(payload);
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET_REFRESH_KEY,
-      expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
-    });
-
-    return { accessToken, refreshToken }; 
-
-    // if (user && (await bcrypt.compare(loginDto.password, user.password))) {
-    //   const payload = { userId: user.id, login: user.login };
-    //   const accessToken = this.jwtService.sign(payload);
-    //   return { accessToken };
-    // } else {
-    //   throw new UnauthorizedException('Invalid credentials');
-    // }
+    if (user && (await bcrypt.compare(loginDto.password, user.password))) {
+      const payload = { userId: user.id, login: user.login };
+      const accessToken = this.jwtService.sign(payload);
+      const refreshToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET_REFRESH_KEY,
+        expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
+      });
+      return { accessToken, refreshToken };
+    } else {
+      throw new UnauthorizedException('Invalid credentials');
+    }
   }
 
   async refresh(refreshToken: string) {

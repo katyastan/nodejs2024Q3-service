@@ -19,7 +19,7 @@ services:
       retries: 10
 
   migration:
-    image: katyastan/nodejs2024q3-service-app:latest
+    image: katyastan/nodejs2024q3-service-app:task-logging
     container_name: migration
     restart: 'on-failure'
     depends_on:
@@ -31,7 +31,7 @@ services:
     command: npm run migrate
 
   app:
-    image: katyastan/nodejs2024q3-service-app:latest
+    image: katyastan/nodejs2024q3-service-app:task-logging
     container_name: app
     restart: always
     depends_on:
