@@ -29,7 +29,7 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
 
-  
+
   app.use((req: Request, res: Response, next: Function) => {
     const { method, originalUrl, query, body } = req;
 
@@ -42,6 +42,16 @@ async function bootstrap() {
       );
     });
     next();
+  });
+
+  process.on('uncaughtException', (error) => {
+    loggingService.error(`Uncaught Exception: ${error.message}`, error.stack);
+  });
+
+  process.on('unhandledRejection', (reason, promise) => {
+    loggingService.error(
+      `Unhandled Rejection at: ${promise} reason: ${reason}`,
+    );
   });
 }
 
