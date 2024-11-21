@@ -11,10 +11,12 @@ import {
 import { FavoritesService } from './favorites.service';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { FavoritesResponseDto } from './dto/favorites-response.dto';
+import { LoggingService } from '../logging/logging.service';
 
 @Controller('favs')
 export class FavoritesController {
-  constructor(private favoritesService: FavoritesService) {}
+  constructor(private favoritesService: FavoritesService,
+    private readonly loggingService: LoggingService,) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all favorites' })
@@ -24,6 +26,7 @@ export class FavoritesController {
     type: [FavoritesResponseDto],
   })
   async getAll() {
+    this.loggingService.log('Getting all favorites', 'Favorites');
     return await this.favoritesService.getAllFavorites();
   }
 
@@ -39,6 +42,7 @@ export class FavoritesController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 422, description: 'Artist not found.' })
   async addArtist(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Adding artist to favorites: ${id}`, 'Favorites');
     await this.favoritesService.addArtistToFavorites(id);
   }
 
@@ -50,6 +54,7 @@ export class FavoritesController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Artist  is not favorite.' })
   async removeArtist(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Removing artist from favorites: ${id}`, 'Favorites');
     await this.favoritesService.removeArtistFromFavorites(id);
   }
 
@@ -65,6 +70,7 @@ export class FavoritesController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 422, description: 'Album not found.' })
   async addAlbum(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Adding album to favorites: ${id}`, 'Favorites');
     await this.favoritesService.addAlbumToFavorites(id);
   }
 
@@ -76,6 +82,7 @@ export class FavoritesController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Album is not favorite.' })
   async removeAlbum(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Removing album from favorites: ${id}`, 'Favorites');
     await this.favoritesService.removeAlbumFromFavorites(id);
   }
 
@@ -91,6 +98,7 @@ export class FavoritesController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 422, description: 'Track not found.' })
   async addTrack(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Adding track to favorites: ${id}`, 'Favorites');
     await this.favoritesService.addTrackToFavorites(id);
   }
 
@@ -102,6 +110,7 @@ export class FavoritesController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Track is not favorite.' })
   async removeTrack(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Removing track from favorites: ${id}`, 'Favorites');
     await this.favoritesService.removeTrackFromFavorites(id);
   }
 }

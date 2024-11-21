@@ -24,12 +24,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const message =
       exception instanceof HttpException
         ? exception.getResponse()
-        : 'Internal server error';
+        : exception;
 
-    this.loggingService.error(
-      `HTTP ${status} Error: ${JSON.stringify(message)}`,
-      exception instanceof Error ? exception.stack : '',
-    );
+    const errorMessage = `${request.method} ${request.url} - ${status} - ${JSON.stringify(
+      message,
+    )}`;
+    const errorStack = exception instanceof Error ? exception.stack : '';
+
+    this.loggingService.error(errorMessage, errorStack, 'ExceptionFilter');
 
     response.status(status).json({
       statusCode: status,

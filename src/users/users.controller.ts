@@ -21,11 +21,15 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/user-response.dto';
+import { LoggingService } from '../logging/logging.service';
 
 @ApiTags('Users')
 @Controller('user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly loggingService: LoggingService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all users' })
@@ -35,6 +39,7 @@ export class UsersController {
     type: [UserResponseDto],
   })
   async getAll() {
+    this.loggingService.log('Getting all users', 'UsersController');
     return await this.usersService.findAll();
   }
 
@@ -49,6 +54,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Getting user by id: ${id}`, 'UsersController');
     return await this.usersService.findById(id);
   }
 
@@ -63,6 +69,7 @@ export class UsersController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   async create(@Body() createUserDto: CreateUserDto) {
+    this.loggingService.log(`Creating user: ${createUserDto.login}`, 'UsersController');
     return await this.usersService.create(createUserDto);
   }
 
@@ -82,6 +89,7 @@ export class UsersController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
+    this.loggingService.debug(`Updating password for user: ${id}`, 'UsersController');
     return await this.usersService.update(id, updatePasswordDto);
   }
 
@@ -93,6 +101,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.warn(`Deleting user: ${id}`, 'UsersController');
     await this.usersService.delete(id);
   }
 }
