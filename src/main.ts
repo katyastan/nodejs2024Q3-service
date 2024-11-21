@@ -4,7 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { LoggingService } from './logging/logging.service';
 import { AllExceptionsFilter } from './filters/exeptions.filter';
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { ValidationPipe } from '@nestjs/common';
 
@@ -20,11 +20,7 @@ async function bootstrap() {
       canActivate(context) {
         const request = context.switchToHttp().getRequest();
         const { url } = request;
-        if (
-          url === '/' ||
-          url.startsWith('/auth/') ||
-          url.startsWith('/doc')
-        ) {
+        if (url === '/' || url.startsWith('/auth/') || url.startsWith('/doc')) {
           return true;
         }
         return super.canActivate(context);
@@ -47,8 +43,7 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
 
-
-  app.use((req: Request, res: Response, next: Function) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     const { method, originalUrl, query, body } = req;
 
     res.on('finish', () => {

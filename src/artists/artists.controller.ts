@@ -18,8 +18,10 @@ import { LoggingService } from '../logging/logging.service';
 
 @Controller('artist')
 export class ArtistsController {
-  constructor(private readonly artistsService: ArtistsService,
-    private readonly loggingService: LoggingService,) {}
+  constructor(
+    private readonly artistsService: ArtistsService,
+    private readonly loggingService: LoggingService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all artists' })
@@ -58,7 +60,10 @@ export class ArtistsController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   async create(@Body() createArtistDto: CreateArtistDto) {
-    this.loggingService.log(`Creating artist: ${createArtistDto.name}`, 'Artists');
+    this.loggingService.log(
+      `Creating artist: ${createArtistDto.name}`,
+      'Artists',
+    );
     return await this.artistsService.create(createArtistDto);
   }
 

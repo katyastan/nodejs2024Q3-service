@@ -69,7 +69,10 @@ export class UsersController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   async create(@Body() createUserDto: CreateUserDto) {
-    this.loggingService.log(`Creating user: ${createUserDto.login}`, 'UsersController');
+    this.loggingService.log(
+      `Creating user: ${createUserDto.login}`,
+      'UsersController',
+    );
     return await this.usersService.create(createUserDto);
   }
 
@@ -89,7 +92,10 @@ export class UsersController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    this.loggingService.debug(`Updating password for user: ${id}`, 'UsersController');
+    this.loggingService.debug(
+      `Updating password for user: ${id}`,
+      'UsersController',
+    );
     return await this.usersService.update(id, updatePasswordDto);
   }
 

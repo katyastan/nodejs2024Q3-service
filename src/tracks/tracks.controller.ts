@@ -18,8 +18,10 @@ import { LoggingService } from '../logging/logging.service';
 
 @Controller('track')
 export class TracksController {
-  constructor(private readonly tracksService: TracksService,
-    private readonly loggingService: LoggingService,) {}
+  constructor(
+    private readonly tracksService: TracksService,
+    private readonly loggingService: LoggingService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all tracks' })

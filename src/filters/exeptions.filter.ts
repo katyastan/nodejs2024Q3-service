@@ -22,9 +22,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     const message =
-      exception instanceof HttpException
-        ? exception.getResponse()
-        : exception;
+      exception instanceof HttpException ? exception.getResponse() : exception;
 
     const errorMessage = `${request.method} ${request.url} - ${status} - ${JSON.stringify(
       message,

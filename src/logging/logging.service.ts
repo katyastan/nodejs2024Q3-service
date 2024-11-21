@@ -1,4 +1,4 @@
-import { Injectable, ConsoleLogger, LogLevel, Scope } from '@nestjs/common';
+import { Injectable, ConsoleLogger } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ConfigService } from '@nestjs/config';
@@ -112,7 +112,7 @@ export class LoggingService extends ConsoleLogger {
     try {
       const stats = fs.statSync(filePath);
       return stats.size;
-    } catch (err) {
+    } catch {
       return 0;
     }
   }

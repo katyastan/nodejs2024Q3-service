@@ -51,7 +51,7 @@ export class AuthService {
         expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
       });
       return { accessToken, refreshToken: newRefreshToken };
-    } catch (e) {
+    } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
   }

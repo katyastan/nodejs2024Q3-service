@@ -18,8 +18,10 @@ import { LoggingService } from '../logging/logging.service';
 
 @Controller('album')
 export class AlbumsController {
-  constructor(private readonly albumsService: AlbumsService,
-    private readonly loggingService: LoggingService,) {}
+  constructor(
+    private readonly albumsService: AlbumsService,
+    private readonly loggingService: LoggingService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all albums' })

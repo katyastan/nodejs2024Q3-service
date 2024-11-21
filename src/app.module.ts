@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { ArtistsModule } from './artists/artists.module';
 import { AlbumsModule } from './albums/albums.module';
@@ -24,12 +24,9 @@ import { LoggingModule } from './logging/logging.module';
     AlbumsModule,
     TracksModule,
     FavoritesModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    JwtStrategy,
-  ],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}
