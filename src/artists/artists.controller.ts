@@ -14,10 +14,14 @@ import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { ArtistResponseDto } from './dto/artist-response.dto';
+import { LoggingService } from '../logging/logging.service';
 
 @Controller('artist')
 export class ArtistsController {
-  constructor(private readonly artistsService: ArtistsService) {}
+  constructor(
+    private readonly artistsService: ArtistsService,
+    private readonly loggingService: LoggingService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all artists' })
@@ -27,6 +31,7 @@ export class ArtistsController {
     type: [ArtistResponseDto],
   })
   async getAll() {
+    this.loggingService.log('Getting all artists', 'Artists');
     return await this.artistsService.findAll();
   }
 
@@ -41,6 +46,7 @@ export class ArtistsController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Artist not found.' })
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Getting artist by id: ${id}`, 'Artists');
     return await this.artistsService.findById(id);
   }
 
@@ -54,6 +60,10 @@ export class ArtistsController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   async create(@Body() createArtistDto: CreateArtistDto) {
+    this.loggingService.log(
+      `Creating artist: ${createArtistDto.name}`,
+      'Artists',
+    );
     return await this.artistsService.create(createArtistDto);
   }
 
@@ -71,6 +81,7 @@ export class ArtistsController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateArtistDto: CreateArtistDto,
   ) {
+    this.loggingService.log(`Updating artist: ${id}`, 'Artists');
     return await this.artistsService.update(id, updateArtistDto);
   }
 
@@ -82,6 +93,7 @@ export class ArtistsController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Artist not found.' })
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Removing artist: ${id}`, 'Artists');
     await this.artistsService.delete(id);
   }
 }

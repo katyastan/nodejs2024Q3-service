@@ -14,10 +14,14 @@ import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { TrackResponseDto } from './dto/track-response.dto';
+import { LoggingService } from '../logging/logging.service';
 
 @Controller('track')
 export class TracksController {
-  constructor(private readonly tracksService: TracksService) {}
+  constructor(
+    private readonly tracksService: TracksService,
+    private readonly loggingService: LoggingService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all tracks' })
@@ -27,6 +31,7 @@ export class TracksController {
     type: [TrackResponseDto],
   })
   async getAll() {
+    this.loggingService.log('Getting all tracks', 'Tracks');
     return await this.tracksService.findAll();
   }
 
@@ -41,6 +46,7 @@ export class TracksController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Track not found.' })
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Getting track by id: ${id}`, 'Tracks');
     return await this.tracksService.findById(id);
   }
 
@@ -54,6 +60,7 @@ export class TracksController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   async create(@Body() createTrackDto: CreateTrackDto) {
+    this.loggingService.log(`Creating track: ${createTrackDto.name}`, 'Tracks');
     return await this.tracksService.create(createTrackDto);
   }
 
@@ -71,6 +78,7 @@ export class TracksController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateTrackDto: CreateTrackDto,
   ) {
+    this.loggingService.log(`Updating track by id: ${id}`, 'Tracks');
     return await this.tracksService.update(id, updateTrackDto);
   }
 
@@ -82,6 +90,7 @@ export class TracksController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Track not found.' })
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Deleting track by id: ${id}`, 'Tracks');
     await this.tracksService.delete(id);
   }
 }

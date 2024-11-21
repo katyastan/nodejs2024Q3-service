@@ -3,6 +3,7 @@ services:
   app:
     volumes:
       - ./src:/app/src
+      - ./logs:/app/logs
     command: npx nodemon --watch src --exec ts-node src/main.ts
     environment:
       NODE_ENV: development

@@ -14,10 +14,14 @@ import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { AlbumResponseDto } from './dto/album-response.dto';
+import { LoggingService } from '../logging/logging.service';
 
 @Controller('album')
 export class AlbumsController {
-  constructor(private readonly albumsService: AlbumsService) {}
+  constructor(
+    private readonly albumsService: AlbumsService,
+    private readonly loggingService: LoggingService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all albums' })
@@ -27,6 +31,7 @@ export class AlbumsController {
     type: [AlbumResponseDto],
   })
   async getAll() {
+    this.loggingService.log('Getting all albums', 'Albums');
     return await this.albumsService.findAll();
   }
 
@@ -41,6 +46,7 @@ export class AlbumsController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Album not found.' })
   async getById(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Getting album by id: ${id}`, 'Albums');
     return await this.albumsService.findById(id);
   }
 
@@ -54,6 +60,7 @@ export class AlbumsController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   async create(@Body() createAlbumDto: CreateAlbumDto) {
+    this.loggingService.log(`Creating album: ${createAlbumDto.name}`, 'Albums');
     return await this.albumsService.create(createAlbumDto);
   }
 
@@ -71,6 +78,7 @@ export class AlbumsController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateAlbumDto: CreateAlbumDto,
   ) {
+    this.loggingService.log(`Updating album: ${id}`, 'Albums');
     return await this.albumsService.update(id, updateAlbumDto);
   }
 
@@ -82,6 +90,7 @@ export class AlbumsController {
   @ApiResponse({ status: 400, description: 'Invalid UUID.' })
   @ApiResponse({ status: 404, description: 'Album not found.' })
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    this.loggingService.log(`Removing album: ${id}`, 'Albums');
     await this.albumsService.delete(id);
   }
 }
