@@ -115,3 +115,23 @@ npm run docker:scan
 
 
 The image of my application is available on DockerHub : [DockerHub](https://hub.docker.com/repository/docker/katyastan/nodejs2024q3-service-app/tags)
+
+
+
+## Logging & Error Handling and Authentication & Authorization
+
+To run the Application:
+```bash
+npm run docker:compose:dev
+```
+
+To run only specific test suite with authorization
+```bash
+npm run test:auth
+```
+
+**Logs**
+
+You can change the  logging level and max file size. Open the `.env` file and set the desired variable.
+
+Application logs are stored in the `logs` directory. The system implements log rotation and retention, ensuring that older logs are preserved in separate files with timestamped suffixes. This helps maintain organized and manageable log files over time.
